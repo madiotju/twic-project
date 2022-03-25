@@ -18,13 +18,24 @@ public class VilleController {
 	public ArrayList get(@RequestParam(required  = false, value="codePostal") String codePostal) throws DaoException {
 		System.out.println("get");
 		// TODO : mon code vers la BDD
-		System.out.println(codePostal);
 		VilleDao villeDao = daoFactory.getVilleDao();
 		ArrayList<String> villes = villeDao.getVille(codePostal);
 
 		return villes;
 	}
-	
+
+	@RequestMapping(value = "/villepost", method = RequestMethod.POST)
+	@ResponseBody
+	public void post(@RequestBody String request) throws DaoException {
+		request.replace("+"," ");
+		String[] parts = request.split("&");
+		for (String part : parts){
+			System.out.println(part);
+		}
+		VilleDao villeDao = daoFactory.getVilleDao();
+		//TODO: créer méthode dans dao pour save les éléments à partir du string récupéré par la méthode post
+	}
+
 	// TODO : 
 	// fonction pour enregistrer un element dans la BDD
 	@RequestMapping(value = "/ville", method = RequestMethod.POST)
@@ -34,17 +45,7 @@ public class VilleController {
 	}
 
 
-	@RequestMapping(value = "/ajoutVille", method = RequestMethod.GET)
-	public void post(@RequestParam(value = "codeCommune")String codeCommune,
-					 @RequestParam(value = "nomCommune") String nomCommune,
-					 @RequestParam(value = "codePostal") String codePostal,
-					 @RequestParam(value = "libelle") String libelle,
-					 @RequestParam(value = "latitude") String latitude,
-					 @RequestParam(value = "longitude") String longitude) throws DaoException {
-		System.out.println("post");
-		VilleDao villeDao = daoFactory.getVilleDao();
-		villeDao.saveVille(codeCommune,nomCommune,codePostal,libelle,latitude,longitude);
-	}
+
 
 	@RequestMapping(value = "/zebi",method = RequestMethod.PUT)
 	public void put(){
