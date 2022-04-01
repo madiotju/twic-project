@@ -53,8 +53,8 @@ public class VilleDaoMysql implements VilleDao{
     }
 
     @Override
-    public void saveVille(String codeCommune, String nomCommune, String codePostal, String libelle, String latitude,
-                          String longitude) throws DaoException {
+    public void saveVille(String codeCommune, String nomCommune, String codePostal, String libelle,String ligne5,
+                          String latitude, String longitude) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {

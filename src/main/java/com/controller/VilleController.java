@@ -3,6 +3,8 @@ package com.controller;
 import com.dao.DaoException;
 import com.dao.DaoFactory;
 import com.dao.VilleDao;
+import com.form.FormException;
+import com.form.VilleSaver;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,13 +28,14 @@ public class VilleController {
 
 	@RequestMapping(value = "/villepost", method = RequestMethod.POST)
 	@ResponseBody
-	public void post(@RequestBody String request) throws DaoException {
+	public void post(@RequestBody String request) throws DaoException, FormException {
 		request.replace("+"," ");
 		String[] parts = request.split("&");
 		for (String part : parts){
 			System.out.println(part);
 		}
-		VilleDao villeDao = daoFactory.getVilleDao();
+		VilleSaver saver = new VilleSaver(request);
+		saver.saveVille();
 		//TODO: créer méthode dans dao pour save les éléments à partir du string récupéré par la méthode post
 	}
 
