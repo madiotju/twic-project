@@ -4,6 +4,8 @@ import com.dao.DaoException;
 import com.dao.DaoFactory;
 import com.dao.VilleDao;
 
+import java.sql.SQLException;
+
 public class VilleSaver {
     private String[] fullValues;
     private DaoFactory daoFactory;
@@ -30,7 +32,7 @@ public class VilleSaver {
         }
     }
 
-    public void saveVille() throws DaoException {
+    public void saveVille() throws DaoException, SQLException {
         VilleDao villeDao = daoFactory.getVilleDao();
         villeDao.saveVille(values[0],values[1],values[2],values[3],values[4],values[5],values[6]);
     }

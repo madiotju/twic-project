@@ -18,7 +18,7 @@ public class VilleController {
 
 	// fonction pour récupérer le contenu de la BDD
 	@GetMapping(value="/ville")
-	public List<String> get(@RequestParam(required  = false, value="codePostal") String codePostal) throws DaoException {
+	public List<String> get(@RequestParam(required  = false, value="codePostal") String codePostal) throws DaoException, SQLException {
 		System.out.println("get");
 		VilleDao villeDao = daoFactory.getVilleDao();
 
@@ -34,7 +34,7 @@ public class VilleController {
 
 	@PostMapping(value = "/villepost")
 	@ResponseBody
-	public void post(@RequestBody String request) throws DaoException, FormException {
+	public void post(@RequestBody String request) throws DaoException, FormException, SQLException {
 		request = request.replace("+"," ");
 		String[] parts = request.split("&");
 		for (String part : parts){
@@ -46,7 +46,7 @@ public class VilleController {
 
 	@PutMapping(value = "/villeput")
 	@ResponseBody
-	public void put(@RequestBody(required = false) String request) throws DaoException {
+	public void put(@RequestBody(required = false) String request) throws DaoException, SQLException {
 		System.out.println("put");
 		request = request.replace("+"," ");
 		String[] parts = request.split("&");
