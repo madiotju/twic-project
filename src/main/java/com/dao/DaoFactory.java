@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DaoFactory {
-    private String url;
-    private String username;
-    private String password;
+    private final String url;
+    private final String username;
+    private final String password;
 
     DaoFactory(String url, String username, String password) {
         this.url = url;
@@ -16,26 +16,15 @@ public class DaoFactory {
     }
 
     public static DaoFactory getInstance() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
 
-        }
-
-        DaoFactory instance = new DaoFactory(
-                //TODO: Modifier les informations de la BDD
+        return new DaoFactory(
                 "jdbc:mysql://localhost:8889/twic_maven", "test", "network");
-        return instance;
     }
 
     public Connection getConnection() throws SQLException {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         Connection connexion = DriverManager.getConnection(url, username, password);
         connexion.setAutoCommit(false);
+
         return connexion;
     }
 

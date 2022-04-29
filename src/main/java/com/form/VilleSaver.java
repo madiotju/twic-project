@@ -3,7 +3,6 @@ package com.form;
 import com.dao.DaoException;
 import com.dao.DaoFactory;
 import com.dao.VilleDao;
-import com.dao.VilleDaoMysql;
 
 public class VilleSaver {
     private String[] fullValues;
@@ -22,7 +21,12 @@ public class VilleSaver {
     private void setValues() {
         values = new String[7];
         for (int i=0; i< fullValues.length; i++) {
-            values[i] = fullValues[i].split("=")[1];
+            if (fullValues[i].split("=").length == 2){
+                values[i] = fullValues[i].split("=")[1];
+            } else {
+                values[i] = "";
+            }
+
         }
     }
 

@@ -4,55 +4,64 @@ import com.dao.DaoException;
 import com.dao.DaoFactory;
 import com.dao.VilleDao;
 import com.form.FormException;
+import com.form.VilleEditer;
 import com.form.VilleSaver;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 public class VilleController {
-	private DaoFactory daoFactory = DaoFactory.getInstance();
-
+	private final DaoFactory daoFactory = DaoFactory.getInstance();
 
 
 	// fonction pour récupérer le contenu de la BDD
-	@RequestMapping(value="/ville", method=RequestMethod.GET)
-	public ArrayList get(@RequestParam(required  = false, value="codePostal") String codePostal) throws DaoException {
+	@GetMapping(value="/ville")
+	public List<String> get(@RequestParam(required  = false, value="codePostal") String codePostal) throws DaoException {
 		System.out.println("get");
-		// TODO : mon code vers la BDD
 		VilleDao villeDao = daoFactory.getVilleDao();
-		ArrayList<String> villes = villeDao.getVille(codePostal);
 
-		return villes;
+		return villeDao.getVille(codePostal);
 	}
 
-	@RequestMapping(value = "/villepost", method = RequestMethod.POST)
+	@GetMapping(value = "/villePosition")
+	public String[] getLocation(@RequestParam(value = "nomVille") String nomVille) throws DaoException, SQLException {
+		nomVille = nomVille.replace("_"," ");
+		VilleDao villeDao = daoFactory.getVilleDao();
+		return villeDao.getLocation(nomVille);
+	}
+
+	@PostMapping(value = "/villepost")
 	@ResponseBody
 	public void post(@RequestBody String request) throws DaoException, FormException {
-		request.replace("+"," ");
+		request = request.replace("+"," ");
 		String[] parts = request.split("&");
 		for (String part : parts){
 			System.out.println(part);
 		}
 		VilleSaver saver = new VilleSaver(request);
 		saver.saveVille();
-		//TODO: créer méthode dans dao pour save les éléments à partir du string récupéré par la méthode post
 	}
 
-	// TODO : 
-	// fonction pour enregistrer un element dans la BDD
-	@RequestMapping(value = "/ville", method = RequestMethod.POST)
+	@PutMapping(value = "/villeput")
 	@ResponseBody
-	public String insert() {
-		return null;
+	public void put(@RequestBody(required = false) String request) throws DaoException {
+		System.out.println("put");
+		request = request.replace("+"," ");
+		String[] parts = request.split("&");
+		for (String part : parts){
+			System.out.println(part);
+		}
+		VilleEditer editer = new VilleEditer(request);
+		editer.changeVille();
 	}
 
-
-
-
-	@RequestMapping(value = "/zebi",method = RequestMethod.PUT)
-	public void put(){
-
+	@DeleteMapping(value = "/villedelete/{codeCommune}")
+	public void delete(@PathVariable String codeCommune) throws SQLException, DaoException {
+		System.out.println("delete");
+		VilleDao villeDao = DaoFactory.getInstance().getVilleDao();
+		villeDao.deleteVille(codeCommune);
 	}
 
 }
