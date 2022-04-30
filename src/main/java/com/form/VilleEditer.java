@@ -16,6 +16,7 @@ public class VilleEditer {
         request = request.replace("{","");
         request = request.replace("}","");
         request = request.replace("\"","");
+        request = request.replace("?","");
         fullValues = request.split(",");
         daoFactory = DaoFactory.getInstance();
         setValues();
@@ -27,6 +28,7 @@ public class VilleEditer {
         for (int i=0; i< fullValues.length; i++) {
             if (fullValues[i].split(":").length == 2){
                 values[i] = fullValues[i].split(":")[1];
+                values[i] = values[i].replace("_", " ");
             } else {
                 values[i] = "";
             }

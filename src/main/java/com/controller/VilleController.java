@@ -9,6 +9,7 @@ import com.form.VilleSaver;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,13 @@ public class VilleController {
 		VilleDao villeDao = daoFactory.getVilleDao();
 
 		return villeDao.getVille(codePostal);
+	}
+
+	@GetMapping(value = "/villes")
+	public List<ArrayList<String>> getAll(@RequestParam(required  = false, value="codeCommune") String codeCommune) throws DaoException, SQLException {
+		VilleDao villeDao = daoFactory.getVilleDao();
+
+		return villeDao.getCompleteVille(codeCommune);
 	}
 
 	@GetMapping(value = "/villePosition")
@@ -46,9 +54,10 @@ public class VilleController {
 
 	@PutMapping(value = "/villeput")
 	@ResponseBody
-	public void put(@RequestBody(required = false) String request) throws DaoException, SQLException {
+	public void put(@RequestBody String request) throws DaoException, SQLException {
 		System.out.println("put");
 		request = request.replace("+"," ");
+		request = request.replace("?","");
 		String[] parts = request.split("&");
 		for (String part : parts){
 			System.out.println(part);

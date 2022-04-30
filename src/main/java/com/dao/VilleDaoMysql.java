@@ -2,6 +2,7 @@ package com.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VilleDaoMysql implements VilleDao{
     private final DaoFactory daoFactory;
@@ -61,13 +62,14 @@ public class VilleDaoMysql implements VilleDao{
             connection = this.daoFactory.getConnection();
             preparedStatement = connection.prepareStatement("INSERT INTO ville_france(Code_commune_INSEE,Nom_commune," +
                     "Code_postal,Libelle_acheminement,Ligne_5,Latitude,Longitude)" +
-                    " VALUES(?, ?, ?, ?, '', ?, ?);");
+                    " VALUES(?, ?, ?, ?, ?, ?, ?);");
             preparedStatement.setString(1,codeCommune);
             preparedStatement.setString(2,nomCommune);
             preparedStatement.setString(3,codePostal);
             preparedStatement.setString(4,libelle);
-            preparedStatement.setString(5,latitude);
-            preparedStatement.setString(6,longitude);
+            preparedStatement.setString(5,ligne5);
+            preparedStatement.setString(6,latitude);
+            preparedStatement.setString(7,longitude);
             preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -172,7 +174,7 @@ public class VilleDaoMysql implements VilleDao{
                 }
             } catch (SQLException ignored) {
             }
-            throw new DaoException("Impossible de communiquer avec la base de données");
+            throw new DaoException(ERROR_MESSAGE);
         }
         finally {
             if (preparedStatement != null) {
@@ -186,5 +188,53 @@ public class VilleDaoMysql implements VilleDao{
         }
 
         return location;
+    }
+
+    @Override
+    public ArrayList<ArrayList<String>> getCompleteVille(String codeCommune) throws DaoException, SQLException {
+        ArrayList<ArrayList<String>> villes = new ArrayList<>();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = daoFactory.getConnection();
+            statement = connection.createStatement();
+            String query;
+            if (codeCommune == null){
+                query = "SELECT * FROM ville_france";
+            } else {
+                query = "SELECT * FROM ville_france WHERE Code_commune_INSEE=" + codeCommune;
+            }
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                ArrayList<String> infos = new ArrayList<>();
+                infos.add(resultSet.getString("Code_commune_INSEE"));
+                infos.add(resultSet.getString("Nom_commune"));
+                infos.add(resultSet.getString("Code_postal"));
+                infos.add(resultSet.getString("Libelle_acheminement"));
+                infos.add(resultSet.getString("Ligne_5"));
+                infos.add(resultSet.getString("Latitude"));
+                infos.add(resultSet.getString("Longitude"));
+                villes.add(infos);
+            }
+        } catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ignored) {
+            }
+            throw new DaoException(ERROR_MESSAGE);
+        }
+        finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return villes;
     }
 }

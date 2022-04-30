@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class VilleSaver {
     private String[] fullValues;
-    private DaoFactory daoFactory;
+    private final DaoFactory daoFactory;
     private String[] values;
 
     public VilleSaver(String request) throws FormException {
